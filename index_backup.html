@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+  <head>
+    <title>processing</title>
+    <style rel="stylesheet">
+      body {
+        background-color:#333333;
+      }
+      #container {
+        margin:0 auto;
+        width:1000px;
+      }
+    </style>
+    <script type="text/javascript" src="js/processing-1.4.1.js"></script>
+    <script type="text/processing" data-processing-target="mycanvas">
+      // Global variables
+      float radius = 50.0;
+      int X, Y;
+      int nX, nY;
+      int delay = 16;
+
+      // Setup the Processing Canvas
+      void setup(){
+        size( 300, 300 );
+        strokeWeight( 10 );
+        frameRate( 30 );
+        X = width / 2;
+        Y = height / 2;
+        nX = X;
+        nY = Y;  
+      }
+
+      // Main draw loop
+      void draw(){
+        
+        radius = radius + sin( frameCount / 4 );
+        
+        // Track circle to new destination
+        X+=(nX-X)/delay;
+        Y+=(nY-Y)/delay;
+        
+        // Fill canvas grey
+        background( 100 );
+        
+        // Set fill-color to blue
+        fill( 0, 121, 184 );
+        
+        // Set stroke-color white
+        stroke(255); 
+        
+        // Draw circle
+        ellipse( X, Y, radius, radius );                  
+      }
+      // Set circle's next destination
+      void mouseMoved(){
+        nX = mouseX;
+        nY = mouseY;  
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="mycanvas" style="display:none"></canvas>
+    <canvas id="canvas1" width="200" height="200" style="display:none"></canvas>
+    <script id="script1" type="text/javascript">
+
+      // Simple way to attach js code to the canvas is by using a function
+      function sketchProc(processing) {
+        // Override draw function, by default it will be called 60 times per second
+        processing.draw = function() {
+          // determine center and max clock arm length
+          var centerX = processing.width / 2, centerY = processing.height / 2;
+          var maxArmLength = Math.min(centerX, centerY);
+
+          function drawArm(position, lengthScale, weight) {      
+            processing.strokeWeight(weight);
+            processing.line(centerX, centerY, 
+              centerX + Math.sin(position * 2 * Math.PI) * lengthScale * maxArmLength,
+              centerY - Math.cos(position * 2 * Math.PI) * lengthScale * maxArmLength);
+          }
+
+          // erase background
+          processing.background(224);
+
+          var now = new Date();
+
+          // Moving hours arm by small increments
+          var hoursPosition = (now.getHours() % 12 + now.getMinutes() / 60) / 12;
+          drawArm(hoursPosition, 0.5, 5);
+
+          // Moving minutes arm by small increments
+          var minutesPosition = (now.getMinutes() + now.getSeconds() / 60) / 60;
+          drawArm(minutesPosition, 0.80, 3);
+
+          // Moving hour arm by second increments
+          var secondsPosition = now.getSeconds() / 60;
+          drawArm(secondsPosition, 0.90, 1);
+        };
+          
+      }
+      var canvas = document.getElementById("canvas1");
+      var p = new Processing(canvas, sketchProc);
+    // p.exit(); to detach it
+    </script>
+
+    <canvas id="tweenTest"  width="400" height="150"></canvas>
+    <script src="Tween.lib"></script>
+    <script type="text/processing" data-processing-target="tweenTest">
+      class MovingObject {
+        float x;
+        float y;
+        float tx;
+        float ty;
+        Tween t;
+        Tween t2;
+        
+        public MovingObject(float x, float y, float tx, float ty) {
+          this.x = x;
+          this.y = y;
+          this.tx = tx;
+          this.ty = ty;
+          t = new Tween(this, "x", Tween.backEaseOut, x, tx, 0.5);
+          t2 = new Tween(this, "y", Tween.backEaseOut, y, ty, 0.5);
+        }
+        
+        public void update() {
+          t.tick();
+          t2.tick();
+        }
+        
+        public void draw() {
+          noStroke();
+          fill(120);
+          ellipse(x, y, 30, 30);
+        }
+        
+        public void restart() {
+          t.start();
+          t2.start();
+        }
+      }
+
+      MovingObject mo;
+
+      void setup() {
+        size(400, 150);
+        mo = new MovingObject(50, 30, 360, 130);
+      }
+
+      void draw() {
+        background(244);
+        
+        mo.update();
+        mo.draw();
+      }
+
+      void mousePressed() {
+        mo.restart();
+      }
+
+    </script>
+
+
+
+    <canvas id="tween"  width="400" height="150"></canvas>
+    <script type="text/javascript">
+    function Test() {
+      this.xPos = 200;
+    }
+
+    Test.prototype.yell = function() {
+      //alert("yell!!");
+    }
+      
+    </script>
+    <script type="text/processing" data-processing-target="tween">
+    // All Examples Written by Casey Reas and Ben Fry
+
+    // unless otherwise stated.  
+
+    float x;
+
+    float y;
+
+    float targetX, targetY;
+
+    float easing = 0.1;
+
+    Test t = new Test();
+    t.yell();
+
+    void setup() 
+
+    {
+
+      size(200, 200); 
+
+      smooth();
+
+      noStroke();  
+
+    }
+
+
+
+    void draw() 
+
+    { 
+
+      background( 51 );
+
+      
+
+      /*targetX = mouseX;
+
+      float dx = mouseX - x;
+
+      if(abs(dx) > 1) {
+
+        x += dx * easing;
+
+      }
+
+      
+
+      targetY = mouseY;
+
+      float dy = mouseY - y;
+
+      if(abs(dy) > 1) {
+
+        y += dy * easing;
+
+      }*/
+
+      
+
+      ellipse(x, y, 33, 33);
+
+    }
+    </script>
+    <div id="container">
+      <canvas id="canvas2" width="300" height="300"></canvas>
+    </div>
+    <script type="text/processing" data-processing-target="canvas2">
+      // Global variables
+      MRect rec1;
+      Line l1;
+      Circle c1;
+
+      // Setup the Processing Canvas
+      void setup(){
+        size( 1000, 1000 );
+        //strokeWeight( 10 );
+        noStroke();
+        frameRate( 60 );
+        background(55,55,55);
+
+        rec1 = new MRect(200, 500, 20, 20);
+        c1 = new Circle(252, 144, 300, 300);
+        l1 = new Line(rec1.xpos, rec1.ypos, c1.x, c1.y);
+      }
+
+      class MRect 
+      {
+        float w; //  width
+        float xpos; // rect xposition
+        float h; // rect height
+        float ypos ; // rect yposition
+       
+        MRect(float ixp, float iyp, float iw, float ih) {
+          w = iw;
+          xpos = ixp;
+          h = ih;
+          ypos = iyp;
+        }
+       
+        void render() {
+          noStroke();
+          fill( 126, 199, 118 );
+          rect(xpos-(w/2), ypos-(h/2), w, h);
+        }
+
+        void lineTo(x1, y1) {
+          l.toX = x1;
+          l.toY = y1;
+          l.render();
+        }
+      }
+
+      class Line 
+      {
+        float fromX;
+        float fromY;
+        float toX;
+        float toY;
+        
+        Line(float _fromX, float _fromY, float _toX, float _toY) {
+          fromX = _fromX;
+          fromY = _fromY;
+          toX = _toX;
+          toY = _toY;
+        }
+
+        void render() {
+          stroke(126, 199, 118);
+          strokeWeight(0.5);
+          line(fromX, fromY, toX, toY);
+        }
+
+      }
+
+      class Circle
+      {
+        float x;
+        float y;
+        float w;
+        float h;
+        boolean mover = false;
+        boolean locked = false;
+
+        Circle(float _x, float _y, float _w, float _h) {
+          x = _x;
+          y = _y;
+          w = _w;
+          h = _h;
+        }
+        void render() {
+          noStroke();
+          fill(251, 175, 93);
+          ellipse(x, y, w, h);
+          //console.log(x);
+        }
+      }
+      
+      void draw() {
+        // Test if the cursor is over the circle 
+        if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
+            mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
+          c1.mover = true;  
+        } 
+        else {
+          c1.mover = false;
+        }
+        
+
+        background(55,55,55);
+        //if (rec1.w < 200) rec1.w ++;
+        rec1.render();
+        //l1.toX++;
+        l1.render();
+        c1.render();
+        //fill(255);
+        //ellipse(252, 144, 72, 72)
+      }
+      void mousePressed() {
+        if (c1.mover) {
+          c1.locked = true;
+        }
+        else {
+          c1.locked = false;
+        }
+      }
+
+      void mouseDragged() {
+          if (c1.locked) {
+            c1.x = mouseX; 
+            c1.y = mouseY;
+            l1.toX = c1.x;
+            l1.toY = c1.y;
+          } 
+      }
+      void mouseReleased() {
+
+         c1.locked = false;
+        console.log("ff");
+
+      }
+    </script>
+    <!--<script id="script2" type="text/javascript">
+
+      // Simple way to attach js code to the canvas is by using a function
+      function sketchProc(processing) {
+        // Override draw function, by default it will be called 60 times per second
+        processing.frameRate = 30;
+        processing.size( 1000, 1000 );
+
+        function Rec() {
+          this.width = 10;
+          this.height = 10;
+          this.color = [66,66,66];
+          this.fill = processing.fill( 0, 121, 184 );
+          this.render = processing.rect(0,0,width,height);
+
+          return this;
+        }
+        function drawLine(position, lengthScale, weight) {      
+            processing.strokeWeight(weight);
+            processing.line(centerX, centerY, 
+              centerX + Math.sin(position * 2 * Math.PI) * lengthScale * maxArmLength,
+              centerY - Math.cos(position * 2 * Math.PI) * lengthScale * maxArmLength);
+          }
+
+        var line1 = function() {
+          processing.strokeWeight(1);
+
+          return this;
+        }
+
+        processing.draw = function() {
+          
+          // determine center and max clock arm length
+          var centerX = processing.width / 2, centerY = processing.height / 2;
+          var maxArmLength = Math.min(centerX, centerY);
+
+          function drawArm(position, lengthScale, weight) {      
+            processing.strokeWeight(weight);
+            processing.line(centerX, centerY, 
+              centerX + Math.sin(position * 2 * Math.PI) * lengthScale * maxArmLength,
+              centerY - Math.cos(position * 2 * Math.PI) * lengthScale * maxArmLength);
+          }
+
+          // erase background
+          var c = processing.color(66, 66, 66);
+          processing.background(c);
+
+          var now = new Date();
+
+          // Moving hours arm by small increments
+          var hoursPosition = (now.getHours() % 12 + now.getMinutes() / 60) / 12;
+          drawArm(hoursPosition, 0.5, 5);
+
+          // Moving minutes arm by small increments
+          var minutesPosition = (now.getMinutes() + now.getSeconds() / 60) / 60;
+          drawArm(minutesPosition, 0.80, 3);
+
+          // Moving hour arm by second increments
+          var secondsPosition = now.getSeconds() / 60;
+          drawArm(secondsPosition, 0.90, 1);
+
+          processing.fill( 0, 121, 184 );
+          processing.rect(0,0,50,50);
+        };
+          
+      }
+      var canvas = document.getElementById("canvas2");
+      var p = new Processing(canvas, sketchProc);
+    // p.exit(); to detach it
+    </script>-->
+  </body>
+</html>
