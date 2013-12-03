@@ -120,21 +120,22 @@ textarea {
 }
 
 body {
-    background-color: #666;
+    background-color: #282828;
+    color:#fff;
 }
 p {
-    color:#fff;
     padding:0;
     margin:0;
 }
 canvas {
     position:relative;
-    background: #999999;
+    /*background: #999999;*/
 }
 #container {
     width:1200px;
     margin: 0 auto;
     position:relative;
+    background:#373737;
 }
 .bg_ref {
     position: absolute;;
@@ -143,6 +144,7 @@ canvas {
     width:1200px;
     height:1400px;
     background: url(../images/floorplan_type01.png) no-repeat top left;
+    display:none;
 }
 header {
     font-family: 'avenir_lt_std85_heavy', sans-serif;
@@ -162,7 +164,7 @@ header {
 nav {
     position: relative;
     font-family: 'avenir_lt_std35_light', sans-serif;
-    height:100px;
+    height:130px;
     padding: 0px 83px;
 }
 .nav_cat {
@@ -170,7 +172,46 @@ nav {
     margin: 27px 0px 39px 0px;
 }
 
-
+.nav_container {
+    float:left;
+    margin-left:22px;
+    margin-top:18px;
+}
+.nav_container ul {
+    margin:0;
+    padding:0;
+}
+.nav_container ul li {
+    float:left;
+    background: #444;
+    padding:13px 13px;
+    margin-right:15px;
+    font-size:11px;
+}
+#design {
+    background:#7ec776;
+}
+#ux {
+    background:#414141;
+}
+#tech {
+    background:#aba000;
+}
+#video {
+    background:#eca94f;
+}
+#research {
+    background:#ea4997;
+}
+#strategy {
+    background:#8c6239;
+}
+#production {
+    background:#7e609b;
+}
+#administrative {
+    background:#09a1e2;
+}
 
 
 

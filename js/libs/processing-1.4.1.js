@@ -8267,7 +8267,7 @@
         });
         attachEventHandler(curElement, "touchmove", function(t) {
           if (p.touchMove !== undef) {
-            //t.preventDefault();
+            t.preventDefault();
             t = addTouchEventOffset(t);
             p.touchMove(t)
           }
@@ -8293,7 +8293,7 @@
           if (typeof p.mousePressed === "function") p.mousePressed()
         });
         attachEventHandler(curElement, "touchmove", function(e) {
-          //e.preventDefault();
+          e.preventDefault();
           updateMousePosition(curElement, e.touches[0]);
           if (typeof p.mouseMoved === "function" && !p.__mousePressed) p.mouseMoved();
           if (typeof p.mouseDragged === "function" && p.__mousePressed) {
