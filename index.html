@@ -15,10 +15,95 @@
  
   </head>
   <body>
+    <div id="container">
+      <div class="floor"></div>
+      <canvas id="canvas2" width="1200" height="1200" ontouchstart="touchStart(event);" ontouchmove="touchMove(event);" ontouchend="touchEnd(event);" ontouchcancel="touchCancel(event);" ></canvas>
+      <header>
+        <p class="main_cat">RFI Studios Analytics</p>
+        <div class="main_cat_r dropdown_menu">
+          <div class="dropdown_items">
+            <p>Profitability</p>
+          </div>
+          <div class="arrow_down_big"><img src="images/arrow_down.png" /></div>
+        </div>
+        <div class="clear"></div>
+      </header>
+      <nav>
+        <hr/>
+        <div class="cat1 dropdown_menu">
+          <div class="dropdown_items">
+            <p class="cat1_title">Clients</p>
+          </div>
+          <div class="vertical_line">|</div>
+          <div class="arrow_down_small"><img src="images/arrow_down.png" /></div>
+        </div>
+        <div class="nav_container">
+          <ul>
+            <li class="button_rec"><p>metlife</p></li>
+            <li class="button_rec"><p>rfi</p></li>
+            <li class="button_rec"><p>citibank</p></li>
+            <li class="button_rec"><p>novartis</p></li>
+            <li class="button_rec"><p>mjff</p></li>
+            <li class="button_rec"><p>home depot</p></li>
+            <li class="button_rec"><p>new biz</p></li>
+            <li class="button_rec"><p>samsung</p></li>
+          </ul>
+        </div>
+        
 
-    <canvas id="tweenTest"  width="400" height="150" style="display:none"></canvas>
+        <div class="clear"></div>
+        <hr/>
+      </nav>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
+    <script src="js/plugins.js"></script>
+    <script type="application/processing" data-processing-target="canvas2" src="js/main.js" ></script>
+    <script type="text/javascript">
+
+      var processingInstance;
+
+      function setProcessingMouse(event){
+      if (!processingInstance) {
+      processingInstance = Processing.getInstanceById("canvas2");
+      //alert(processingInstance);
+      }
+
+      var x = event.touches[0].pageX;
+      var y = event.touches[0].pageY;
+
+      processingInstance.mouseX = x;
+      processingInstance.mouseY = y;
+      };
+
+      function touchStart(event) {
+      //event.preventDefault();
+      setProcessingMouse(event);
+      processingInstance.mousePressed();
+      };
+
+      function touchMove(event) {
+      //event.preventDefault();
+      setProcessingMouse(event);
+      processingInstance.mouseDragged();
+      };
+
+      function touchEnd(event) {
+      //event.preventDefault();
+      setProcessingMouse(event);
+      processingInstance.mouseReleased();
+      };
+
+      function touchCancel(event) {
+      //event.preventDefault();
+      setProcessingMouse(event);
+      processingInstance.mouseReleased();
+      };
+    </script>
+    <!--<canvas id="tweenTest"  width="400" height="150" style="display:block"></canvas>
     <script src="js/libs/Tween.lib"></script>
-    <!--<script type="text/processing" data-processing-target="tweenTest">
+    <script type="text/processing" data-processing-target="tweenTest">
       class MovingObject {
         float x;
         float y;
@@ -54,18 +139,24 @@
       }
 
       MovingObject mo;
+      PFont fontA;
 
       void setup() {
         frameRate( 60 );
         size(400, 150);
         mo = new MovingObject(50, 30, 360, 130);
+
+        fontA = createFont("avenir_lt_std35_heavy");
+
       }
 
       void draw() {
-        background(0);
+        background(#ffffff);
         
         mo.update();
         mo.draw();
+        textFont(fontA, 50);
+        text("JONG", 100, 60);
       }
 
       void mousePressed() {
@@ -73,268 +164,6 @@
       }
 
     </script>-->
-    <div id="container">
-      <div class="bg_ref"></div>
-      <header>
-        <p class="main_cat">Productivity</p>
-        <p class="main_cat_r">Analytics</p>
-        <div class="clear"></div>
-      </header>
-      <nav>
-        <hr/>
-        <p class="nav_cat">Department</p>
-        <div class="nav_container">
-          <ul>
-            <li id="design">design</li>
-            <li id="ux">UX</li>
-            <li id="tech">tech</li>
-            <li id="video">video</li>
-            <li id="research">research</li>
-            <li id="strategy">strategy</li>
-            <li id="production">production</li>
-            <li id="administrative">administrative</li>
-          </ul>
-        </div>
-        <div class="clear"></div>
-        <hr/>
-      </nav>
-
-      <canvas id="canvas2" width="300" height="300" ontouchstart="touchStart(event);" ontouchmove="touchMove(event);" ontouchend="touchEnd(event);" ontouchcancel="touchCancel(event);" ></canvas>
-    </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
-    <script src="js/plugins.js"></script>
-    <script src="js/main.js"></script>
-    <script type="text/processing" data-processing-target="canvas2">
-
-      // Global variables
-      Array circles = [];
-      Array rects = [];
-      Array lines = [];
-
-
-      MRect rec1;
-      Line l1;
-      Circle c1;
-
-      // Setup the Processing Canvas
-      void setup(){
-        size( 1200, 1200 );
-        //strokeWeight( 10 );
-        noStroke();
-        frameRate( 60 );
-        background(0,0,0,0);
-
-        rec1 = new MRect(200, 500, 20, 20);
-        c1 = new Circle(252, 144, 300, 300);
-        l1 = new Line(rec1.xpos, rec1.ypos, c1.x, c1.y);
-      }
-
-      class MRect 
-      {
-        float w; //  width
-        float xpos; // rect xposition
-        float h; // rect height
-        float ypos ; // rect yposition
-       
-        MRect(float ixp, float iyp, float iw, float ih) {
-          w = iw;
-          xpos = ixp;
-          h = ih;
-          ypos = iyp;
-        }
-       
-        void render() {
-          noStroke();
-          fill( 126, 199, 118 );
-          rect(xpos-(w/2), ypos-(h/2), w, h);
-        }
-
-        void lineTo(x1, y1) {
-          l.toX = x1;
-          l.toY = y1;
-          l.render();
-        }
-      }
-
-      class Line 
-      {
-        float fromX;
-        float fromY;
-        float toX;
-        float toY;
-        
-        Line(float _fromX, float _fromY, float _toX, float _toY) {
-          fromX = _fromX;
-          fromY = _fromY;
-          toX = _toX;
-          toY = _toY;
-        }
-
-        void render() {
-          stroke(126, 199, 118);
-          strokeWeight(0.5);
-          line(fromX, fromY, toX, toY);
-        }
-
-      }
-
-      class Circle
-      {
-        float x;
-        float y;
-        float w;
-        float h;
-        boolean mover = false;
-        boolean locked = false;
-
-        Circle(float _x, float _y, float _w, float _h) {
-          x = _x;
-          y = _y;
-          w = _w;
-          h = _h;
-        }
-        void render() {
-          noStroke();
-          fill(251, 175, 93);
-          ellipse(x, y, w, h);
-          //console.log(x);
-        }
-      }
-      
-      void draw() {
-        // Test if the cursor is over the circle 
-        if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
-            mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
-          c1.mover = true;  
-        } 
-        else {
-          c1.mover = false;
-        }
-        
-
-        background(0,0,0,0);
-        //if (rec1.w < 200) rec1.w ++;
-        rec1.render();
-        //l1.toX++;
-        l1.render();
-        c1.render();
-        //fill(255);
-        //ellipse(252, 144, 72, 72)
-      }
-      void mousePressed() {
-        if (c1.mover) {
-          c1.locked = true;
-        }
-        else {
-          c1.locked = false;
-        }
-      }
-
-      void mouseDragged() {
-          if (c1.locked) {
-            c1.x = mouseX; 
-            c1.y = mouseY;
-            l1.toX = c1.x;
-            l1.toY = c1.y;
-          } 
-      }
-      void mouseReleased() {
-
-         c1.locked = false;
-        console.log("ff");
-
-      }
-
-      /*
-        class Ball {
- 
-          float x;
-          float y;
-          int r;
-          color col;
-          boolean hit = false;
-           
-          Ball(int r_, float x_, float y_, color col_) {
-            r = r_;
-            x = x_;
-            y = y_;
-            col = col_;
-          }
-           
-          void display(float x_, float y_) {
-            x = x_;
-            y = y_;
-             
-            noStroke();
-            if (hit) {
-              fill(col);
-            } else {
-              fill(255);
-            }
-            ellipse(x, y, r, r);
-          }
-           
-          void hitTest(Ball ball) {
-             
-            // get larger radius
-            float rad = (r > ball.r ? r : ball.r);
-            // "if expressions" are if statements that return a value
-             
-            if (dist(x, y, ball.x, ball.y) <= rad) {
-              ball.hit = true;
-              hit = true;
-            } else {
-              ball.hit = false;
-              hit = false;
-            }
-          }
-        }
-
-      */
-    </script>
-    <script type="text/javascript">
-
-    var processingInstance;
-
-    function setProcessingMouse(event){
-    if (!processingInstance) {
-    processingInstance = Processing.getInstanceById("canvas2");
-    //alert(processingInstance);
-    }
-
-    var x = event.touches[0].pageX;
-    var y = event.touches[0].pageY;
-
-    processingInstance.mouseX = x;
-    processingInstance.mouseY = y;
-    };
-
-    function touchStart(event) {
-    //event.preventDefault();
-    setProcessingMouse(event);
-    processingInstance.mousePressed();
-    };
-
-    function touchMove(event) {
-    //event.preventDefault();
-    setProcessingMouse(event);
-    processingInstance.mouseDragged();
-    };
-
-    function touchEnd(event) {
-    //event.preventDefault();
-    setProcessingMouse(event);
-    processingInstance.mouseReleased();
-    };
-
-    function touchCancel(event) {
-    //event.preventDefault();
-    setProcessingMouse(event);
-    processingInstance.mouseReleased();
-    };
-    </script>
-    <div style="height:500px; width:200px;"></div>
   </body>
 </html>
 

@@ -128,28 +128,32 @@ p {
     margin:0;
 }
 canvas {
-    position:relative;
+    position:absolute;
+    top:0px;
     /*background: #999999;*/
+}
+canvas:focus {
+    outline:none;
 }
 #container {
     width:1200px;
     margin: 0 auto;
     position:relative;
     background:#373737;
+    height:1200px;
 }
-.bg_ref {
+.floor {
     position: absolute;;
-    top:0px;
+    top:540px;
     left:0px;
     width:1200px;
-    height:1400px;
-    background: url(../images/floorplan_type01.png) no-repeat top left;
-    display:none;
+    height:594px;
+    background: url(../images/floorplan_type02.png) no-repeat top left;
 }
 header {
     font-family: 'avenir_lt_std85_heavy', sans-serif;
     position: relative;
-    padding: 36px 83px 0px 83px;
+    padding: 36px 83px 10px 83px;
 }
 
 .main_cat {
@@ -167,15 +171,13 @@ nav {
     height:130px;
     padding: 0px 83px;
 }
-.nav_cat {
+.cat1_title {
     float: left;
-    margin: 27px 0px 39px 0px;
 }
 
 .nav_container {
     float:left;
-    margin-left:22px;
-    margin-top:18px;
+    margin:25px 0px 30px 40px;
 }
 .nav_container ul {
     margin:0;
@@ -184,11 +186,14 @@ nav {
 .nav_container ul li {
     float:left;
     background: #444;
-    padding:13px 13px;
-    margin-right:15px;
+    margin-right:13px;
     font-size:11px;
+    text-align: center;
 }
-#design {
+.nav_container ul li > p {
+    margin-top:12px;
+}
+/*#design {
     background:#7ec776;
 }
 #ux {
@@ -211,15 +216,43 @@ nav {
 }
 #administrative {
     background:#09a1e2;
+}*/
+.button_rec {
+    width: 100px;
+    height:40px;
+    background-color: #414141;
+}
+.button_rec.active {
+    background-color: #FFF;
+    color:#000;
 }
 
 
 
-
-
-
-
-
+.dropdown_items {
+    float:left;
+}
+.arrow_down_big {
+    float:left;
+    margin:0px 10px;
+}
+.arrow_down_small {
+    float:left;
+    width:10px;
+}
+.arrow_down_small img {
+    width:100%;
+}
+hr {
+    margin: 0.5em 0;
+}
+.vertical_line {
+    color:#545454;
+    margin:0px 5px;
+    font-family: "avenir_lt_std85_heavy", sans-serif;;
+    font-weight: 300px;
+    float:left;
+}
 .left_float {
     float: left;
 }

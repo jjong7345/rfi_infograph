@@ -1,0 +1,87 @@
+<!doctype HTML>
+<html> 
+<head> 
+
+<script type="text/javascript" src="js/libs/processing-1.4.1.js"></script>
+<style> 
+@font-face{ 
+font-family: "clarendon"; 
+src: url("clarendon-wbk.ttf"); 
+} 
+
+@font-face {
+    font-family: 'avenir_lt_std85_heavy';
+    src: url('css/fonts/avenirltstd-heavy-webfont.eot');
+    src: url('css/fonts/avenirltstd-heavy-webfont.eot?#iefix') format('embedded-opentype'),
+         url('css/fonts/avenirltstd-heavy-webfont.woff') format('woff'),
+         url('css/fonts/avenirltstd-heavy-webfont.ttf') format('truetype'),
+         url('css/fonts/avenirltstd-heavy-webfont.svg#avenir_lt_std85_heavy') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'avenir_lt_std35_light';
+    src: url('css/fonts/avenirltstd-light-webfont.eot');
+    src: url('css/fonts/avenirltstd-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('css/fonts/avenirltstd-light-webfont.woff') format('woff'),
+         url('css/fonts/avenirltstd-light-webfont.ttf') format('truetype'),
+         url('css/fonts/avenirltstd-light-webfont.svg#avenir_lt_std35_light') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+#control { 
+font-family: "avenir_lt_std35_light"; 
+} 
+
+</style> 
+<title>processing.js font question</title> 
+</head> 
+<body> 
+<div id="control">This is written in the font, clarendon.</div> 
+<canvas id="main" width="400" height="400"></canvas> 
+<script type="text/javascript"> 
+var canvas = document.getElementById("main"); 
+var p = new Processing(canvas, mySketch); 
+
+// BTW, if you also want to pre-load images do this: 
+var sketch = p.externals.sketch; 
+sketch.imageCache.add("filename.ext"); 
+
+// to set font crisp 
+sketch.options.crispLines = true; 
+
+// wrapping your sketch in this function seems to ensure that 
+// the font(s) specified in @font-face are loaded before it runs 
+function mySketch(pjs) { 
+
+    var clarendon; 
+    var sysFont; 
+
+    pjs.setup = function() { 
+        pjs.size(400,400); 
+        pjs.background(150); 
+        // load an external font (specified in @font-face) 
+        clarendon = pjs.createFont("avenir_lt_std35_light"); 
+        // to load a system font, simply specify the name: 
+        sysFont = pjs.createFont("Comic Sans MS"); 
+
+        pjs.textFont(clarendon, 18); 
+    }; 
+
+    pjs.draw = function() { 
+        pjs.background(150); 
+        pjs.textFont(clarendon, 18); 
+        pjs.text("This should be written in clarendon.",10,25); 
+
+        pjs.textFont(sysFont, 18); 
+        pjs.text("This should be written in Comic Sans.", 10, 60); 
+    }; 
+
+}; 
+
+</script> 
+</body> 
+</html> 
