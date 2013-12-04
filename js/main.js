@@ -81,6 +81,8 @@ class Circle
   float h;
   boolean mover = false;
   boolean locked = false;
+  Tween t;
+  Tween t2;
 
   Circle(float _x, float _y, float _w, float _h) {
     x = _x;
@@ -94,6 +96,15 @@ class Circle
     fill(#373737);
     ellipse(x, y, w, h);
     //console.log(x);
+  }
+  public void update() {
+    t.tick();
+    t2.tick();
+  }
+  public void goto(tx, ty) {
+
+    t = new Tween(this, "x", Tween.backEaseOut, x, tx, 0.5);
+    t2 = new Tween(this, "y", Tween.backEaseOut, y, ty, 0.5);
   }
 }
 
@@ -124,6 +135,7 @@ void draw() {
   rec1.render();
   //l1.toX++;
   l1.render();
+  c1.update();
   c1.render();
   //fill(255);
   //ellipse(252, 144, 72, 72)/
@@ -168,6 +180,9 @@ void mouseReleased() {
 
 }
 
+void bound() {
+
+}
 
 console.log("loaded");
 
@@ -250,7 +265,7 @@ var RFINFO = RFINFO || {};
       trace(currClientsIndex);
       switch(currClientsIndex) {
         case 0:
-          processingInstance.beep();
+          processingInstance.bound();
           break;
       }
     }
