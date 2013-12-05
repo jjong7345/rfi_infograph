@@ -2,6 +2,14 @@
 Array circles = [];
 Array rects = [];
 Array lines = [];
+boolean looping = false;
+
+Array design = [ { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63" },
+                 { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75" },
+                 { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57" },
+                 { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34" },
+                 { name:"Kaven", x:"286", y:"636", total_hours:"4", total_fee:"700", percent:"0.5" },
+                 { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63" } ];
 
 
 MRect rec1;
@@ -13,12 +21,10 @@ void setup(){
   size( 1200, 1200 );
   //strokeWeight( 10 );
   noStroke();
+  smooth();
   frameRate( 60 );
   background(0,0,0,0);
-
-  rec1 = new MRect(200, 800, 15, 15);
-  c1 = new Circle(252, 500, 250, 250);
-  l1 = new Line(rec1.x, rec1.y, c1.x, c1.y);
+  noLoop();
 
 }
 
@@ -92,56 +98,67 @@ class Circle
   }
   void render() {
     stroke(#7ec776)
-    strokeWeight(10); 
+    strokeWeight(8); 
     fill(#373737);
     ellipse(x, y, w, h);
     //console.log(x);
   }
   public void update() {
-    t.tick();
-    t2.tick();
+    if ((t) && (t2)) {
+      t.tick();
+      t2.tick();
+    }
   }
   public void goto(tx, ty) {
 
     t = new Tween(this, "x", Tween.backEaseOut, x, tx, 0.5);
     t2 = new Tween(this, "y", Tween.backEaseOut, y, ty, 0.5);
+    t.start();
+    t2.start();
   }
 }
 
 void draw() {
-  // Test if the cursor is over the circle 
-  if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
-      mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
-    //console.log("on CIRCLE!!");
-    c1.mover = true;  
-  } 
-  else {
-    c1.mover = false;
-  }
+  if (looping) {
+    // Test if the cursor is over the circle 
+    /*if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
+        mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
+      c1.mover = true;  
+    } 
+    else {
+      c1.mover = false;
+    }
 
-  // Test if the cursor is over the rec 
-  if (mouseX > rec1.x - (rec1.w/2) && mouseX < rec1.x + (rec1.w/2) && 
-      mouseY > rec1.y - (rec1.h/2) && mouseY < rec1.y + (rec1.h/2)) {
-    //console.log("on REC!!");
-    rec1.mover = true;  
-  } 
-  else {
-    rec1.mover = false;
-  }
-  
+    // Test if the cursor is over the rec 
+    if (mouseX > rec1.x - (rec1.w/2) && mouseX < rec1.x + (rec1.w/2) && 
+        mouseY > rec1.y - (rec1.h/2) && mouseY < rec1.y + (rec1.h/2)) {
+      rec1.mover = true;  
+    } 
+    else {
+      rec1.mover = false;
+    }*/
+    
 
-  background(0,0,0,0);
-  //if (rec1.w < 200) rec1.w ++;
-  rec1.render();
-  //l1.toX++;
-  l1.render();
-  c1.update();
-  c1.render();
-  //fill(255);
-  //ellipse(252, 144, 72, 72)/
+    background(0,0,0,0);
+    //rec1.render();
+    //l1.render();
+    
+
+    for (var i=0; i<design.length; i++) {
+      lines[i].toX = c1.x;
+      lines[i].toY = c1.y;
+      lines[i].render();
+    }
+
+    c1.update();
+    c1.render();
+
+    //fill(255);
+    //ellipse(252, 144, 72, 72)/
+  }
 }
 void mousePressed() {
-  if (c1.mover) {
+  /*if (c1.mover) {
     c1.locked = true;
   }
   else {
@@ -153,35 +170,51 @@ void mousePressed() {
   }
   else {
     rec1.locked = false;
-  }
+  }*/
 }
 
 void mouseDragged() {
-    if (c1.locked) {
-      c1.x = mouseX; 
-      c1.y = mouseY;
-      l1.toX = c1.x;
-      l1.toY = c1.y;
-    } 
-    if (rec1.locked) {
-      rec1.x = mouseX; 
-      rec1.y = mouseY;
-      l1.fromX = rec1.x;
-      l1.fromY = rec1.y;
-      l1.toX = c1.x;
-      l1.toY = c1.y;
-    } 
+  /*if (c1.locked) {
+    c1.x = mouseX; 
+    c1.y = mouseY;
+    l1.toX = c1.x;
+    l1.toY = c1.y;
+  } 
+  if (rec1.locked) {
+    rec1.x = mouseX; 
+    rec1.y = mouseY;
+    l1.fromX = rec1.x;
+    l1.fromY = rec1.y;
+    l1.toX = c1.x;
+    l1.toY = c1.y;
+  } */
 }
 void mouseReleased() {
 
-   c1.locked = false;
-   rec1.locked = false;
+  c1.locked = false;
+  //rec1.locked = false;
+
+  c1.goto(mouseX, mouseY);
   console.log(rec1.x + ":"+rec1.y);
 
 }
 
-void bound() {
+void showClient(_index) {
 
+  switch(_index) {
+    case 0:
+      c1 = new Circle(600, 600, 75, 75);
+      for (var i=0; i<design.length; i++) {
+        var line = new Line(Number(design[i].x), Number(design[i].y), c1.x, c1.y);
+        lines.push(line);
+      }
+
+      c1.goto(160, 400);
+      break;
+  }
+
+  loop();
+  looping = true;
 }
 
 console.log("loaded");
@@ -265,7 +298,9 @@ var RFINFO = RFINFO || {};
       trace(currClientsIndex);
       switch(currClientsIndex) {
         case 0:
-          processingInstance.bound();
+          clients_bts[currClientsIndex].addClass("active");
+          processingInstance.showClient(currClientsIndex);
+          //processingInstance.noLoop();
           break;
       }
     }

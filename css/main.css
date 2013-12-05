@@ -189,6 +189,7 @@ nav {
     margin-right:13px;
     font-size:11px;
     text-align: center;
+    cursor:pointer;
 }
 .nav_container ul li > p {
     margin-top:12px;
