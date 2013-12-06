@@ -4,16 +4,15 @@ Array rects = [];
 Array lines = [];
 boolean looping = false;
 
-Array design = [ { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63" },
-                 { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75" },
-                 { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57" },
-                 { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34" },
+Array design = [ { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75" },
                  { name:"Kaven", x:"286", y:"636", total_hours:"4", total_fee:"700", percent:"0.5" },
-                 { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63" } ];
+                 { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57" },
+                 { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63" },
+                 { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63" },
+                 { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34" }];
 
 
 MRect rec1;
-Line l1;
 Circle c1;
 
 // Setup the Processing Canvas
@@ -63,16 +62,18 @@ class Line
   float fromY;
   float toX;
   float toY;
+  float strokeColor;
   
-  Line(float _fromX, float _fromY, float _toX, float _toY) {
+  Line(float _fromX, float _fromY, float _toX, float _toY, float _strokeColor) {
     fromX = _fromX;
     fromY = _fromY;
     toX = _toX;
     toY = _toY;
+    strokeColor = _strokeColor;
   }
 
   void render() {
-    stroke(126, 199, 118);
+    stroke(strokeColor);
     strokeWeight(0.5);
     line(fromX, fromY, toX, toY);
   }
@@ -85,21 +86,29 @@ class Circle
   float y;
   float w;
   float h;
+  float strokeColor;
+  float strokeWeightNo;
+  float fillColor;
   boolean mover = false;
   boolean locked = false;
+  boolean spread = false;
   Tween t;
   Tween t2;
 
-  Circle(float _x, float _y, float _w, float _h) {
+  Circle(float _x, float _y, float _w, float _h, float _strokeColor, float _strokeWeight, float _fillColor) {
     x = _x;
     y = _y;
     w = _w;
     h = _h;
+    strokeColor = _strokeColor;
+    strokeWeightNo = _strokeWeight;
+    fillColor = _fillColor;
   }
   void render() {
-    stroke(#7ec776)
-    strokeWeight(8); 
-    fill(#373737);
+
+    stroke(strokeColor);
+    strokeWeight(strokeWeightNo);
+    fill(fillColor);
     ellipse(x, y, w, h);
     //console.log(x);
   }
@@ -109,10 +118,14 @@ class Circle
       t2.tick();
     }
   }
-  public void goto(tx, ty) {
+  public void goto(tx, ty, _ease) {
 
-    t = new Tween(this, "x", Tween.backEaseOut, x, tx, 0.5);
-    t2 = new Tween(this, "y", Tween.backEaseOut, y, ty, 0.5);
+    var ease;
+    if(_ease) ease =  _ease;
+    else  ease = "backEaseOut"
+
+    t = new Tween(this, "x", Tween[ease], x, tx, 0.5);
+    t2 = new Tween(this, "y", Tween[ease], y, ty, 0.5);
     t.start();
     t2.start();
   }
@@ -121,7 +134,7 @@ class Circle
 void draw() {
   if (looping) {
     // Test if the cursor is over the circle 
-    /*if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
+    if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
         mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
       c1.mover = true;  
     } 
@@ -130,7 +143,7 @@ void draw() {
     }
 
     // Test if the cursor is over the rec 
-    if (mouseX > rec1.x - (rec1.w/2) && mouseX < rec1.x + (rec1.w/2) && 
+    /*if (mouseX > rec1.x - (rec1.w/2) && mouseX < rec1.x + (rec1.w/2) && 
         mouseY > rec1.y - (rec1.h/2) && mouseY < rec1.y + (rec1.h/2)) {
       rec1.mover = true;  
     } 
@@ -140,32 +153,29 @@ void draw() {
     
 
     background(0,0,0,0);
-    //rec1.render();
-    //l1.render();
-    
 
     for (var i=0; i<design.length; i++) {
-      lines[i].toX = c1.x;
-      lines[i].toY = c1.y;
+      lines[i].toX = circles[i].x;
+      lines[i].toY = circles[i].y;
       lines[i].render();
+      circles[i].update ();
+      circles[i].render();
     }
 
     c1.update();
     c1.render();
 
-    //fill(255);
-    //ellipse(252, 144, 72, 72)/
   }
 }
 void mousePressed() {
-  /*if (c1.mover) {
+  if (c1.mover) {
     c1.locked = true;
   }
   else {
     c1.locked = false;
   }
 
-  if (rec1.mover) {
+  /*if (rec1.mover) {
     rec1.locked = true;
   }
   else {
@@ -190,25 +200,44 @@ void mouseDragged() {
   } */
 }
 void mouseReleased() {
-
+  if (c1.locked) {
+    if (!c1.spread) {
+      c1.goto(160, 400);
+      var xpos = 300;
+      for (var i=0; i<design.length; i++) {
+        circles[i].goto(xpos, 400);
+        xpos += 120;
+      }
+      c1.spread = true;
+    }
+    else {
+      c1.goto(160, 400);
+      for (var i=0; i<design.length; i++) {
+        circles[i].goto(c1.x, 400, "strongEaseOut");
+      }
+      c1.spread = false;
+    }
+  }
   c1.locked = false;
-  //rec1.locked = false;
 
-  c1.goto(mouseX, mouseY);
-  console.log(rec1.x + ":"+rec1.y);
-
+  //c1.goto(mouseX, mouseY);
 }
 
 void showClient(_index) {
 
   switch(_index) {
     case 0:
-      c1 = new Circle(600, 600, 75, 75);
+      circles = [];
+      lines = [];
+      
       for (var i=0; i<design.length; i++) {
-        var line = new Line(Number(design[i].x), Number(design[i].y), c1.x, c1.y);
+        var circle = new Circle(600, 600, 50, 50, #7ec776, 5, #373737);
+        circles.push(circle);
+        var line = new Line(Number(design[i].x), Number(design[i].y), circle.x, circle.y, #7ec776);
         lines.push(line);
+        circle.goto(160, 400);
       }
-
+      c1 = new Circle(600, 600, 75, 75, #7ec776, 8, #373737);
       c1.goto(160, 400);
       break;
   }
