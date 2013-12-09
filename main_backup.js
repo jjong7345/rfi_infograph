@@ -5,25 +5,22 @@ Array lines_design = [];
 Array lines_production = [];
 boolean looping = false;
 
-Array design = [ { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75", total_budget:"600" },
-                 { name:"Kaven", x:"286", y:"636", total_hours:"4", total_fee:"700", percent:"0.5", total_budget:"600"  },
-                 { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57", total_budget:"45000" },
-                 { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63", total_budget:"5000" },
-                 { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63", total_budget:"17000" },
-                 { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34", total_budget:"8000" }];
-Array production = [ { name:"chelsea", x:"748", y:"636", total_hours:"1", total_fee:"175", percent:"0.13", total_budget:"100" },
-                     { name:"Arielle", x:"775", y:"636", total_hours:"131", total_fee:"11790", percent:"16.38", total_budget:"12000"},
-                     { name:"Fred", x:"775", y:"797", total_hours:"159", total_fee:"44520", percent:"19.88", total_budget:"30000" }];
-Array research = [ { name:"Julianne", x:"775", y:"689", total_hours:"1.5", total_fee:"262.5", percent:"0.19", total_budget:"600" }];
+Array design = [ { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75" },
+                 { name:"Kaven", x:"286", y:"636", total_hours:"4", total_fee:"700", percent:"0.5" },
+                 { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57" },
+                 { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63" },
+                 { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63" },
+                 { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34" }];
+Array production = [ { name:"chelsea", x:"748", y:"636", total_hours:"1", total_fee:"175", percent:"0.13" },
+                     { name:"Arielle", x:"775", y:"636", total_hours:"131", total_fee:"11790", percent:"16.38" },
+                     { name:"Fred", x:"775", y:"797", total_hours:"159", total_fee:"44520", percent:"19.88" }];
+Array research = [ { name:"Julianne", x:"775", y:"689", total_hours:"1.5", total_fee:"262.5", percent:"0.19" }];
 
 
 MRect rec1;
 Circle c1;
 Circle c2;
 PFont fontA;
-
-float unitPerDollor = 0.00225; //(100/44400)
-float unitPerDollorBig = 130/76200;
 
 var processingInstance;
 // Setup the Processing Canvas
@@ -36,11 +33,13 @@ void setup(){
   background(0,0,0,0);
   noLoop();
   fontA = createFont("avenir_lt_std35_light");
-  textFont(fontA, 11);  
+  textFont(fontA, 11);
 
   if (!processingInstance) {
-    processingInstance = Processing.getInstanceById('canvas2');
-  } 
+      processingInstance = Processing.getInstanceById('canvas2');
+      console.log(processingInstance);
+  }
+  
 }
 
 
@@ -91,7 +90,6 @@ class Line
   }
 
   void render() {
-    smooth();
     stroke(strokeColor);
     strokeWeight(0.5);
     line(fromX, fromY, toX, toY);
@@ -386,7 +384,6 @@ void mouseReleased() {
 
 
 
-
 void showClient(_index) {
 
   switch(_index) {
@@ -397,48 +394,34 @@ void showClient(_index) {
       lines_production = [];
       
       for (var i=0; i<design.length; i++) {
-        var circle = new Circle(600, 600, 20, 20, #7ec776, 5, #373737);
+        var circle = new Circle(600, 600, 30, 30, #7ec776, 5, #373737);
         circles_design.push(circle);
         var line = new Line(Number(design[i].x), Number(design[i].y), circle.x, circle.y, #7ec776);
         lines_design.push(line);
-
-        circle.totalBudget = 50 + (Number(design[i].total_budget) * unitPerDollor);
-        circle.totalFee = 50 + (Number(design[i].total_fee) * unitPerDollor);
-        (function(_i) {
-          setTimeout( function() { console.log(_i); circles_design[_i].animateBudgetCircle(0, circles_design[_i].totalBudget, 0, circles_design[_i].totalFee) }, 600);
-        })(i);
-        //circle.animateBudgetCircle(0, circle.totalBudget, 0,circle.totalFee)
-        
         circle.goto(160, 400);
       }
-
       c1 = new Circle(600, 600, 75, 75, #7ec776, 8, #373737);
       c1.setTitle("Design");
-      c1.totalBudget = 90 + (76200*unitPerDollorBig);
-      c1.totalFee = 90 + (67775.5*unitPerDollorBig);;
-      setTimeout( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
+      c1.totalBudget = 220;
+      c1.totalFee = 150;
+      delay( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
       c1.goto(160, 400);
 
+      
+
       for (var i=0; i<production.length; i++) {
-        var circle = new Circle(600, 600, 20, 20, #7e609b, 5, #373737);
+        var circle = new Circle(600, 600, 30, 30, #7e609b, 5, #373737);
         circles_production.push(circle);
         var line = new Line(Number(production[i].x), Number(production[i].y), circle.x, circle.y, #7e609b);
         lines_production.push(line);
-
-        circle.totalBudget = 50 + (Number(production[i].total_budget) * unitPerDollor);
-        circle.totalFee = 50 + (Number(production[i].total_fee) * unitPerDollor);
-        (function(_i) {
-          setTimeout( function() { console.log(_i); circles_production[_i].animateBudgetCircle(0, circles_production[_i].totalBudget, 0, circles_production[_i].totalFee) }, 600);
-        })(i);
-
         circle.goto(460, 400);
       }
 
       c2 = new Circle(600, 600, 75, 75, #7e609b, 8, #373737);
       c2.setTitle("Production");
-      c2.totalBudget = 90 + (42100*unitPerDollorBig);
-      c2.totalFee = 90 + (56485*unitPerDollorBig);
-      setTimeout( function() { c2.animateBudgetCircle(0, c2.totalBudget, 0, c2.totalFee) }, 300);
+      c2.totalBudget = 180;
+      c2.totalFee = 190;
+      delay( function() { c2.animateBudgetCircle(0, c2.totalBudget, 0, c2.totalFee) }, 300);
       c2.goto(460, 400);
 
       break;
@@ -448,11 +431,12 @@ void showClient(_index) {
   looping = true;
 }
 
-void accessVariable(_val) {
-  return _val;
+void delay( function _f, float _t) {
+    setTimeout(_f, _t);
 }
-
 console.log("loaded");
+
+
 
 /*
   class Ball {
