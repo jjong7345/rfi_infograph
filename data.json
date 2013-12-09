@@ -1,0 +1,18 @@
+[
+  { projectName:"metlife", 
+    allocation: {
+                  design: [ 
+                            { name:"Jane", x:"262", y:"661", total_hours:"6", total_fee:"540", percent:"0.75", total_budget:"600" },
+                            { name:"Kaven", x:"286", y:"636", total_hours:"4", total_fee:"700", percent:"0.5", total_budget:"600"  },
+                            { name:"Jisoo", x:"372", y:"689", total_hours:"124.5", total_fee:"39840", percent:"15.57", total_budget:"45000" },
+                            { name:"Aiden", x:"397", y:"636", total_hours:"21", total_fee:"4200", percent:"2.63", total_budget:"5000" },
+                            { name:"Sunhee", x:"533", y:"689", total_hours:"188", total_fee:"15180", percent:"8.63", total_budget:"17000" },
+                            { name:"Joo Yeon", x:"937", y:"636", total_hours:"18.75", total_fee:"7315.5", percent:"2.34", total_budget:"8000" }
+                          ],
+                  production: [
+
+                              ]
+                }
+
+
+]

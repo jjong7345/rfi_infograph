@@ -39,8 +39,6 @@ jQuery.ajax({
 });
 
 function parseData(_xml, _val, _project) {
-  //_project["total_fee"] = _xml.find("total_fee").text();
-  //_project["total_budget"] = 
   _project[_val] = [];
   _xml.find(_val).find('employees').find('person').each(function() {
     var obj = {};
@@ -170,10 +168,6 @@ class Circle
   boolean mover = false;
   boolean locked = false;
   boolean spread = false;
-
-  float totalBudgetDollor = 0;
-  float totalFeeDollor = 0;
-  
   Tween t;
   Tween t2;
   Tween t3;
@@ -188,7 +182,6 @@ class Circle
     strokeWeightNo = _strokeWeight;
     fillColor = _fillColor;
 
-
     //if (_title) title = _title;
   }
   void setTitle(String _val) {
@@ -197,19 +190,16 @@ class Circle
   
   void render() {
 
-    float colorIndex;
-    colorIndex = (((Math.abs(totalBudgetDollor-totalFeeDollor)/totalBudgetDollor) * 100)/130) * 100 * 2;
-
     if (totalFee > totalBudget) {
 
       noStroke();
       smooth();
-      fill(#FFFFFF);
-      ellipse(x, y, tempBudget, tempBudget);
+      fill(#000000, 170);
+      ellipse(x, y, tempFee, tempFee);
 
       noStroke();
       smooth();
-      fill(130 + colorIndex, 130 - colorIndex, 0);
+      fill(#373737);
       ellipse(x, y, tempBudget, tempBudget);
 
     }
@@ -221,8 +211,8 @@ class Circle
 
       noStroke();
       smooth();
-      fill(130 - colorIndex, 130+colorIndex, 0);
-      ellipse(x, y, tempBudget, tempBudget);
+      fill(#373737);
+      ellipse(x, y, tempFee, tempFee);
 
     }
   
@@ -298,7 +288,7 @@ void draw() {
 
     background(0,0,0,0);
     if (!c2.spread) {
-      for (var i=0; i<projects[0].design.length; i++) {
+      for (var i=0; i<design.length; i++) {
         lines_design[i].toX = circles_design[i].x;
         lines_design[i].toY = circles_design[i].y;
         lines_design[i].render();
@@ -310,7 +300,7 @@ void draw() {
     c1.render();
 
     if (!c1.spread) {
-      for (var i=0; i<projects[0].production.length; i++) {
+      for (var i=0; i<production.length; i++) {
         lines_production[i].toX = circles_production[i].x;
         lines_production[i].toY = circles_production[i].y;
         lines_production[i].render();
@@ -382,7 +372,7 @@ void mouseReleased() {
     if (!c1.spread) {
       c1.goto(160, 400);
       var xpos = 300;
-      for (var i=0; i<projects[0].design.length; i++) {
+      for (var i=0; i<design.length; i++) {
         circles_design[i].goto(xpos, 400);
         xpos += 120;
       }
@@ -390,21 +380,21 @@ void mouseReleased() {
       c1.animateBudgetCircle(c1.totalBudget, 0, c1.totalFee, 0);
 
       c2.goto(1400, 400);
-      for (var j=0; j<projects[0].production.length; j++) {
+      for (var j=0; j<production.length; j++) {
         circles_production[j].x = 1300;
       }
 
     }
     else {
       c1.goto(160, 400, "strongEaseOut");
-      for (var i=0; i<projects[0].design.length; i++) {
+      for (var i=0; i<design.length; i++) {
         circles_design[i].goto(c1.x, 400, "strongEaseOut");
       }
       c1.spread = false;
       c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee);
 
       c2.goto(460, 400, "strongEaseOut");
-      for (var j=0; j<projects[0].production.length; j++) {
+      for (var j=0; j<production.length; j++) {
         circles_production[j].goto(460, 400, "strongEaseOut");
       }
     }
@@ -415,7 +405,7 @@ void mouseReleased() {
     if (!c2.spread) {
       c2.goto(460, 400);
       var xpos = 600;
-      for (var i=0; i<projects[0].production.length; i++) {
+      for (var i=0; i<production.length; i++) {
         circles_production[i].goto(xpos, 400);
         xpos += 120;
       }
@@ -423,20 +413,20 @@ void mouseReleased() {
       c2.animateBudgetCircle(c2.totalBudget, 0, c2.totalFee, 0);
 
       c1.goto(-200, 400);
-      for (var j=0; j<projects[0].design.length; j++) {
+      for (var j=0; j<design.length; j++) {
         circles_design[j].x = -100;
       }
     }
     else {
       c2.goto(460, 400, "strongEaseOut");
-      for (var i=0; i<projects[0].production.length; i++) {
+      for (var i=0; i<production.length; i++) {
         circles_production[i].goto(460, 400, "strongEaseOut");
       }
       c2.spread = false;
       c2.animateBudgetCircle(0, c2.totalBudget, 0, c2.totalFee);
 
       c1.goto(160, 400, "strongEaseOut");
-      for (var j=0; j<projects[0].design.length; j++) {
+      for (var j=0; j<design.length; j++) {
         circles_design[j].goto(160, 400, "strongEaseOut");
       }
     }
@@ -464,9 +454,6 @@ void showClient(_index) {
         var line = new Line(Number(projects[0].design[i].x), Number(projects[0].design[i].y), circle.x, circle.y, #7ec776);
         lines_design.push(line);
 
-        
-        circle.totalBudgetDollor = Number(projects[0].design[i].total_budget);
-        circle.totalFeeDollor = Number(projects[0].design[i].total_fee);
         circle.totalBudget = 50 + (Number(projects[0].design[i].total_budget) * unitPerDollor);
         circle.totalFee = 50 + (Number(projects[0].design[i].total_fee) * unitPerDollor);
         (function(_i) {
@@ -479,8 +466,6 @@ void showClient(_index) {
 
       c1 = new Circle(600, 600, 75, 75, #7ec776, 8, #373737);
       c1.setTitle("Design");
-      c1.totalBudgetDollor = 76200;
-      c1.totalFeeDollor = 67775.5;
       c1.totalBudget = 90 + (76200*unitPerDollorBig);
       c1.totalFee = 90 + (67775.5*unitPerDollorBig);;
       setTimeout( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
@@ -492,9 +477,6 @@ void showClient(_index) {
         var line = new Line(Number(projects[0].production[i].x), Number(projects[0].production[i].y), circle.x, circle.y, #7e609b);
         lines_production.push(line);
 
-        circle.totalBudgetDollor = Number(projects[0].production[i].total_budget);
-        circle.totalFeeDollor = Number(projects[0].production[i].total_fee);
-        
         circle.totalBudget = 50 + (Number(projects[0].production[i].total_budget) * unitPerDollor);
         circle.totalFee = 50 + (Number(projects[0].production[i].total_fee) * unitPerDollor);
         (function(_i) {
@@ -506,8 +488,6 @@ void showClient(_index) {
 
       c2 = new Circle(600, 600, 75, 75, #7e609b, 8, #373737);
       c2.setTitle("Production");
-      c2.totalBudgetDollor =42100;
-      c2.totalFeeDollor = 56485;
       c2.totalBudget = 90 + (42100*unitPerDollorBig);
       c2.totalFee = 90 + (56485*unitPerDollorBig);
       setTimeout( function() { c2.animateBudgetCircle(0, c2.totalBudget, 0, c2.totalFee) }, 300);
