@@ -15,18 +15,18 @@ jQuery.ajax({
   console.log("success");
   data = _xml;
   jQuery("body").fadeIn();
+  jQuery(data).find('projects').find('project').each(function() {
 
-  jQuery(data).find('project').each(function() {
-
+    var node = jQuery(this);
     var projectObj = {};
-    projectObj.name =  jQuery(data).find('title').text();
-    parseData(jQuery(this), "design", projectObj);
-    parseData(jQuery(this), "production", projectObj);
-    parseData(jQuery(this), "strategy", projectObj);
-    parseData(jQuery(this), "video", projectObj);
-    parseData(jQuery(this), "research", projectObj);
-    parseData(jQuery(this), "admin", projectObj);
-    parseData(jQuery(this), "tech", projectObj);
+    projectObj.name =  node.find('title').text();
+    parseData(node, "design", projectObj);
+    parseData(node, "production", projectObj);
+    parseData(node, "strategy", projectObj);
+    parseData(node, "video", projectObj);
+    parseData(node, "research", projectObj);
+    parseData(node, "admin", projectObj);
+    parseData(node, "tech", projectObj);
     projects.push(projectObj);
     console.log(projectObj);
   });
@@ -58,10 +58,9 @@ function parseData(_xml, _val, _project) {
 }
 
 // Global variables
-Array circles_design = [];
-Array circles_production = [];
-Array lines_design = [];
-Array lines_production = [];
+Array circles_group = [];
+Array lines_group = [];
+Array circles = [];
 boolean looping = false;
 
 
@@ -71,9 +70,7 @@ boolean looping = false;
 //Array research = [ { name:"Julianne", x:"775", y:"689", total_hours:"1.5", total_fee:"262.5", percent:"0.19", total_budget:"600" }];
 
 
-MRect rec1;
-Circle c1;
-Circle c2;
+
 PFont fontA;
 
 float unitPerDollor = 0.00225; //(100/44400)
@@ -269,21 +266,16 @@ void draw() {
   if (looping) {
     cursor(ARROW);
     // Test if the cursor is over the circle 
-    if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
-        mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
-      c1.mover = true;
-      cursor(HAND);
-    } 
-    else {
-      c1.mover = false;
-    }
-    if (mouseX > c2.x - (c2.w/2) && mouseX < c2.x + (c2.w/2) && 
-        mouseY > c2.y - (c2.h/2) && mouseY < c2.y + (c2.h/2)) {
-      c2.mover = true; 
-      cursor(HAND); 
-    } 
-    else {
-      c2.mover = false;
+    for (var i=0; i<circles.length; i++) {
+      if (mouseX > circles[i].x - (circles[i].w/2) && mouseX < circles[i].x + (circles[i].w/2) && 
+        mouseY > circles[i].y - (circles[i].h/2) && mouseY < circles[i].y + (circles[i].h/2)) {
+        circles[i].mover = true;
+        cursor(HAND);
+      } 
+      else {
+        circles[i].mover = false;
+      }
+
     }
 
     // Test if the cursor is over the rec 
@@ -297,7 +289,7 @@ void draw() {
     
 
     background(0,0,0,0);
-    if (!c2.spread) {
+    /*if (!c2.spread) {
       for (var i=0; i<projects[0].design.length; i++) {
         lines_design[i].toX = circles_design[i].x;
         lines_design[i].toY = circles_design[i].y;
@@ -319,12 +311,48 @@ void draw() {
       }
 
     }
-    c2.render();
+    c2.render();*/
 
+    for (var i=0; i<circles.length; i++) {
+      if (!circles[i].spread) {
+        for (var j=0; j<circles.length; j++) {
+          if (i!=j) {
+            //console.log("dsfsd:"+j);
+            for (var k=0; k<circles_group[j].length; k++) {
+              lines_group[j][k].toX = circles_group[j][k].x;
+              lines_group[j][k].toY = circles_group[j][k].y;
+              lines_group[j][k].render();
+              circles_group[j][k].update();
+              circles_group[j][k].render();
+            }
+          }
+        }
+      }
+    }
+    for (var i=0; i<circles.length; i++) {
+      circles[i].render();
+    }
   }
 }
 void mousePressed() {
-  if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
+
+  for (var i=0; i<circles.length; i++) {
+    if (mouseX > circles[i].x - (circles[i].w/2) && mouseX < circles[i].x + (circles[i].w/2) && 
+        mouseY > circles[i].y - (circles[i].h/2) && mouseY < circles[i].y + (circles[i].h/2)) {
+      circles[i].mover = true;
+    } 
+    else {
+      circles[i].mover = false;
+    }
+    if (circles[i].mover) {
+      circles[i].locked = true;
+    }
+    else {
+      circles[i].locked = false;
+    }
+
+  }
+  /*if (mouseX > c1.x - (c1.w/2) && mouseX < c1.x + (c1.w/2) && 
       mouseY > c1.y - (c1.h/2) && mouseY < c1.y + (c1.h/2)) {
     c1.mover = true;
   } 
@@ -338,9 +366,9 @@ void mousePressed() {
   } 
   else {
     c2.mover = false;
-  }
+  }*/
 
-  if (c1.mover) {
+  /*if (c1.mover) {
     c1.locked = true;
   }
   else {
@@ -351,7 +379,7 @@ void mousePressed() {
   }
   else {
     c2.locked = false;
-  }
+  }*/
 
   /*if (rec1.mover) {
     rec1.locked = true;
@@ -378,40 +406,61 @@ void mouseDragged() {
   } */
 }
 void mouseReleased() {
-  if (c1.locked) {
-    if (!c1.spread) {
-      c1.goto(160, 400);
-      var xpos = 300;
-      for (var i=0; i<projects[0].design.length; i++) {
-        circles_design[i].goto(xpos, 400);
-        xpos += 120;
-      }
-      c1.spread = true;
-      c1.animateBudgetCircle(c1.totalBudget, 0, c1.totalFee, 0);
 
-      c2.goto(1400, 400);
-      for (var j=0; j<projects[0].production.length; j++) {
-        circles_production[j].x = 1300;
-      }
+  for (var k=0; k<circles.length; k++) {
+    
+    if (circles[k].locked) {
+      if (!circles[k].spread) {
+        circles[k].goto(160 + (300*k), 400);
+        var xpos = 300 + (300*k);
+        for (var i=0; i<circles_group[k].length; i++) {
+          circles_group[k][i].goto(xpos, 400);
+          xpos += 120;
+        }
+        circles[k].spread = true;
+        circles[k].animateBudgetCircle(circles[k].totalBudget, 0, circles[k].totalFee, 0);
 
+        
+        for (var l=0; l<circles.length; l++) {
+          if (l!=k) {
+            if (l>k) {
+              circles[l].goto(1400, 400);
+              for (var j=0; j<circles_group[l].length; j++) {
+                circles_group[l][j].x = 1300;
+              }
+            }
+            else {
+               circles[l].goto(-200, 400);
+              for (var j=0; j<circles_group[l].length; j++) {
+                circles_group[l][j].x = -100;
+              } 
+            }
+          }
+        }
+      }
+      else {
+        circles[k].goto(160 + (300*k), 400, "strongEaseOut");
+        for (var i=0; i<circles_group[k].length; i++) {
+          circles_group[k][i].goto(circles[k].x, 400, "strongEaseOut");
+        }
+        circles[k].spread = false;
+        circles[k].animateBudgetCircle(0, circles[k].totalBudget, 0, circles[k].totalFee);
+
+        for (var l=0; l<circles.length; l++) {
+          if (l!=k) {
+            circles[l].goto(160 + (300*l), 400, "strongEaseOut");
+            for (var j=0; j<circles_group[l].length; j++) {
+              circles_group[l][j].goto(160 + (300*l), 400, "strongEaseOut");
+            }
+          }
+        }
+      }
     }
-    else {
-      c1.goto(160, 400, "strongEaseOut");
-      for (var i=0; i<projects[0].design.length; i++) {
-        circles_design[i].goto(c1.x, 400, "strongEaseOut");
-      }
-      c1.spread = false;
-      c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee);
+    circles[k].locked = false;
+ 
+ }
 
-      c2.goto(460, 400, "strongEaseOut");
-      for (var j=0; j<projects[0].production.length; j++) {
-        circles_production[j].goto(460, 400, "strongEaseOut");
-      }
-    }
-  }
-  c1.locked = false;
-
-  if (c2.locked) {
+  /*if (c2.locked) {
     if (!c2.spread) {
       c2.goto(460, 400);
       var xpos = 600;
@@ -441,77 +490,64 @@ void mouseReleased() {
       }
     }
   }
-  c2.locked = false;
+  c2.locked = false;*/
 
   //c1.goto(mouseX, mouseY);
 }
 
+void populateCircles(_projectIndex, _group, _title, _x, _color, _totalBudget, _totalFee) {
 
+  Array temp_circles= [];
+  Array temp_lines = [];
+
+  for (var i=0; i<projects[_projectIndex][_group].length; i++) {
+    var circle = new Circle(600, 600, 20, 20, _color, 5, #373737);
+    temp_circles.push(circle);
+    var line = new Line(Number(projects[_projectIndex][_group][i].x), Number(projects[_projectIndex][_group][i].y), circle.x, circle.y, _color);
+    temp_lines.push(line);
+
+    
+    circle.totalBudgetDollor = Number(projects[_projectIndex][_group][i].total_budget);
+    circle.totalFeeDollor = Number(projects[_projectIndex][_group][i].total_fee);
+    circle.totalBudget = 50 + (Number(projects[_projectIndex][_group][i].total_budget) * unitPerDollor);
+    circle.totalFee = 50 + (Number(projects[_projectIndex][_group][i].total_fee) * unitPerDollor);
+    (function(_i) {
+      setTimeout( function() { temp_circles[_i].animateBudgetCircle(0, temp_circles[_i].totalBudget, 0, temp_circles[_i].totalFee) }, 600);
+    })(i);
+    //circle.animateBudgetCircle(0, circle.totalBudget, 0,circle.totalFee)
+    
+    circle.goto(_x, 400);
+  }
+  circles_group.push(temp_circles);
+  lines_group.push(temp_lines);
+
+  var c1 = new Circle(600, 600, 75, 75, _color, 8, #373737);
+  c1.setTitle(_title);
+  c1.totalBudgetDollor = _totalBudget;
+  c1.totalFeeDollor = _totalFee;
+  c1.totalBudget = 90 + (_totalBudget*unitPerDollorBig);
+  c1.totalFee = 90 + (_totalFee*unitPerDollorBig);;
+  setTimeout( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
+  c1.goto(_x, 400);
+
+  circles.push(c1);
+}
 
 
 void showClient(_index) {
+  circles_group = [];
+  circles = [];
+  lines = [];
 
   switch(_index) {
     case 0:
-      circles_design = [];
-      lines_design = [];
-      circles_production = [];
-      lines_production = [];
-      
-      for (var i=0; i<projects[0].design.length; i++) {
-        var circle = new Circle(600, 600, 20, 20, #7ec776, 5, #373737);
-        circles_design.push(circle);
-        var line = new Line(Number(projects[0].design[i].x), Number(projects[0].design[i].y), circle.x, circle.y, #7ec776);
-        lines_design.push(line);
+      populateCircles(0, "design", "Design", 160, #7ec776, 76200, 67775.5);
+      populateCircles(0, "production", "Production", 460, #7e609b, 42100, 56485);
 
-        
-        circle.totalBudgetDollor = Number(projects[0].design[i].total_budget);
-        circle.totalFeeDollor = Number(projects[0].design[i].total_fee);
-        circle.totalBudget = 50 + (Number(projects[0].design[i].total_budget) * unitPerDollor);
-        circle.totalFee = 50 + (Number(projects[0].design[i].total_fee) * unitPerDollor);
-        (function(_i) {
-          setTimeout( function() { console.log(_i); circles_design[_i].animateBudgetCircle(0, circles_design[_i].totalBudget, 0, circles_design[_i].totalFee) }, 600);
-        })(i);
-        //circle.animateBudgetCircle(0, circle.totalBudget, 0,circle.totalFee)
-        
-        circle.goto(160, 400);
-      }
-
-      c1 = new Circle(600, 600, 75, 75, #7ec776, 8, #373737);
-      c1.setTitle("Design");
-      c1.totalBudgetDollor = 76200;
-      c1.totalFeeDollor = 67775.5;
-      c1.totalBudget = 90 + (76200*unitPerDollorBig);
-      c1.totalFee = 90 + (67775.5*unitPerDollorBig);;
-      setTimeout( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
-      c1.goto(160, 400);
-
-      for (var i=0; i<projects[0].production.length; i++) {
-        var circle = new Circle(600, 600, 20, 20, #7e609b, 5, #373737);
-        circles_production.push(circle);
-        var line = new Line(Number(projects[0].production[i].x), Number(projects[0].production[i].y), circle.x, circle.y, #7e609b);
-        lines_production.push(line);
-
-        circle.totalBudgetDollor = Number(projects[0].production[i].total_budget);
-        circle.totalFeeDollor = Number(projects[0].production[i].total_fee);
-        
-        circle.totalBudget = 50 + (Number(projects[0].production[i].total_budget) * unitPerDollor);
-        circle.totalFee = 50 + (Number(projects[0].production[i].total_fee) * unitPerDollor);
-        (function(_i) {
-          setTimeout( function() { console.log(_i); circles_production[_i].animateBudgetCircle(0, circles_production[_i].totalBudget, 0, circles_production[_i].totalFee) }, 600);
-        })(i);
-
-        circle.goto(460, 400);
-      }
-
-      c2 = new Circle(600, 600, 75, 75, #7e609b, 8, #373737);
-      c2.setTitle("Production");
-      c2.totalBudgetDollor =42100;
-      c2.totalFeeDollor = 56485;
-      c2.totalBudget = 90 + (42100*unitPerDollorBig);
-      c2.totalFee = 90 + (56485*unitPerDollorBig);
-      setTimeout( function() { c2.animateBudgetCircle(0, c2.totalBudget, 0, c2.totalFee) }, 300);
-      c2.goto(460, 400);
+      break;
+    case 1:
+      populateCircles(1, "design", "Design", 160, #7ec776, 76200, 67775.5);
+      populateCircles(1, "production", "Production", 460, #7e609b, 42100, 30000);
 
       break;
   }
@@ -605,6 +641,11 @@ var RFINFO = RFINFO || {};
       trace(currClientsIndex);
       switch(currClientsIndex) {
         case 0:
+          clients_bts[currClientsIndex].addClass("active");
+          processingInstance.showClient(currClientsIndex);
+          //processingInstance.noLoop();
+          break;
+        case 1:
           clients_bts[currClientsIndex].addClass("active");
           processingInstance.showClient(currClientsIndex);
           //processingInstance.noLoop();
