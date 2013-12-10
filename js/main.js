@@ -22,11 +22,11 @@ jQuery.ajax({
     projectObj.name =  node.find('title').text();
     parseData(node, "design", projectObj);
     parseData(node, "production", projectObj);
+    parseData(node, "research", projectObj);
+    parseData(node, "tech", projectObj);
     parseData(node, "strategy", projectObj);
     parseData(node, "video", projectObj);
-    parseData(node, "research", projectObj);
     parseData(node, "admin", projectObj);
-    parseData(node, "tech", projectObj);
     projects.push(projectObj);
     console.log(projectObj);
   });
@@ -195,7 +195,7 @@ class Circle
   void render() {
 
     float colorIndex;
-    colorIndex = (((Math.abs(totalBudgetDollor-totalFeeDollor)/totalBudgetDollor) * 100)/130) * 100 * 2;
+    colorIndex = (((Math.abs(totalBudgetDollor-totalFeeDollor)/totalBudgetDollor) * 100)/130) * 100 * 2.5;
 
     if (totalFee > totalBudget) {
 
@@ -317,7 +317,6 @@ void draw() {
       if (!circles[i].spread) {
         for (var j=0; j<circles.length; j++) {
           if (i!=j) {
-            //console.log("dsfsd:"+j);
             for (var k=0; k<circles_group[j].length; k++) {
               lines_group[j][k].toX = circles_group[j][k].x;
               lines_group[j][k].toY = circles_group[j][k].y;
@@ -325,7 +324,9 @@ void draw() {
               circles_group[j][k].update();
               circles_group[j][k].render();
             }
+            
           }
+         
         }
       }
     }
@@ -495,12 +496,19 @@ void mouseReleased() {
   //c1.goto(mouseX, mouseY);
 }
 
-void populateCircles(_projectIndex, _group, _title, _x, _color, _totalBudget, _totalFee) {
+void populateCircles(_projectIndex, _group, _title, _x, _color) {
 
   Array temp_circles= [];
   Array temp_lines = [];
 
+  float totalBudget = 0;
+  float totalFee = 0;
+ 
+
   for (var i=0; i<projects[_projectIndex][_group].length; i++) {
+    totalBudget += Number(projects[_projectIndex][_group][i].total_budget);
+    totalFee += Number(projects[_projectIndex][_group][i].total_fee);
+
     var circle = new Circle(600, 600, 20, 20, _color, 5, #373737);
     temp_circles.push(circle);
     var line = new Line(Number(projects[_projectIndex][_group][i].x), Number(projects[_projectIndex][_group][i].y), circle.x, circle.y, _color);
@@ -523,10 +531,10 @@ void populateCircles(_projectIndex, _group, _title, _x, _color, _totalBudget, _t
 
   var c1 = new Circle(600, 600, 75, 75, _color, 8, #373737);
   c1.setTitle(_title);
-  c1.totalBudgetDollor = _totalBudget;
-  c1.totalFeeDollor = _totalFee;
-  c1.totalBudget = 90 + (_totalBudget*unitPerDollorBig);
-  c1.totalFee = 90 + (_totalFee*unitPerDollorBig);;
+  c1.totalBudgetDollor = totalBudget;
+  c1.totalFeeDollor = totalFee;
+  c1.totalBudget = 90 + (totalBudget*unitPerDollorBig);
+  c1.totalFee = 90 + (totalFee*unitPerDollorBig);;
   setTimeout( function() { c1.animateBudgetCircle(0, c1.totalBudget, 0, c1.totalFee) }, 300);
   c1.goto(_x, 400);
 
@@ -535,20 +543,22 @@ void populateCircles(_projectIndex, _group, _title, _x, _color, _totalBudget, _t
 
 
 void showClient(_index) {
+
   circles_group = [];
   circles = [];
-  lines = [];
-
+  lines_group = [];
+  
   switch(_index) {
-    case 0:
-      populateCircles(0, "design", "Design", 160, #7ec776, 76200, 67775.5);
-      populateCircles(0, "production", "Production", 460, #7e609b, 42100, 56485);
 
+    case 0:
+      populateCircles(0, "design", "Design", 160, #7ec776);
+      populateCircles(0, "production", "Production", 460, #7e609b);
+      populateCircles(0, "research", "Research", 760, #ea4997);
       break;
     case 1:
-      populateCircles(1, "design", "Design", 160, #7ec776, 76200, 67775.5);
-      populateCircles(1, "production", "Production", 460, #7e609b, 42100, 30000);
-
+      populateCircles(1, "design", "Design", 160, #7ec776);
+      populateCircles(1, "production", "Production", 460, #7e609b);
+      populateCircles(1, "tech", "Tech", 760, #aba000);
       break;
   }
 
@@ -643,11 +653,13 @@ var RFINFO = RFINFO || {};
         case 0:
           clients_bts[currClientsIndex].addClass("active");
           processingInstance.showClient(currClientsIndex);
+          clients_bts[1].removeClass("active");
           //processingInstance.noLoop();
           break;
         case 1:
           clients_bts[currClientsIndex].addClass("active");
           processingInstance.showClient(currClientsIndex);
+          clients_bts[0].removeClass("active");
           //processingInstance.noLoop();
           break;
       }

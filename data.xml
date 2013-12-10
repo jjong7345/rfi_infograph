@@ -11,15 +11,13 @@
     <seat><name>Arielle</name><xPos>775</xPos><yPos>636</yPos></seat>
     <seat><name>Fred</name><xPos>775</xPos><yPos>797</yPos></seat>
     <seat><name>Julianne</name><xPos>775</xPos><yPos>689</yPos></seat>
-    <seat><name>Tejas</name><xPos>775</xPos><yPos>797</yPos></seat>
-    <seat><name>Jeffey</name><xPos>775</xPos><yPos>689</yPos></seat>
+    <seat><name>Tejas</name><xPos>610</xPos><yPos>636</yPos></seat>
+    <seat><name>Jeffrey</name><xPos>665</xPos><yPos>636</yPos></seat>
   </seats>
   <projects>
     <project>
         <title>metlife</title>
         <design>
-          <total_fee>67775.5</total_fee>
-          <total_budget>76200</total_budget>
           <employees>
             <person>
               <name>Jane</name>
@@ -54,8 +52,6 @@
           </employees>
         </design>
         <production>
-          <total_fee>56485</total_fee>
-          <total_budget>42100</total_budget>
           <employees>
             <person>
               <name>Chelsea</name>
@@ -75,8 +71,6 @@
           </employees>
         </production>
         <research>
-          <total_fee>262.5</total_fee>
-          <total_budget>600</total_budget>
           <employees>
             <person>
               <name>Julianne</name>
@@ -85,20 +79,10 @@
             </person>
           </employees>
         </research>
-        <strategy>
-        </strategy>
-        <tech>
-        </tech>
-        <admin>
-        </admin>
-        <video>
-        </video>
     </project>
     <project>
-        <title>metlife</title>
+        <title>citibank</title>
         <design>
-          <total_fee>67775.5</total_fee>
-          <total_budget>76200</total_budget>
           <employees>
             <person>
               <name>Jane</name>
@@ -112,66 +96,39 @@
             </person>
             <person>
               <name>Jisoo</name>
-              <total_fee>39840</total_fee>
+              <total_fee>50000</total_fee>
               <total_budget>45000</total_budget>
             </person>
             <person>
-              <name>Aiden</name>
-              <total_fee>4200</total_fee>
-              <total_budget>5000</total_budget>
-            </person>
-            <person>
-              <name>Sunhee</name>
-              <total_fee>15180</total_fee>
-              <total_budget>17000</total_budget>
-            </person>
-            <person>
               <name>Joo Yeon</name>
-              <total_fee>7315.5</total_fee>
+              <total_fee>5000</total_fee>
               <total_budget>8000</total_budget>
             </person>
           </employees>
         </design>
         <production>
-          <total_fee>56485</total_fee>
-          <total_budget>42100</total_budget>
           <employees>
             <person>
-              <name>Chelsea</name>
-              <total_fee>175</total_fee>
-              <total_budget>100</total_budget>
-            </person>
-            <person>
-              <name>Arielle</name>
-              <total_fee>11790</total_fee>
-              <total_budget>12000</total_budget>
-            </person>
-            <person>
               <name>Fred</name>
-              <total_fee>44520</total_fee>
+              <total_fee>20000</total_fee>
               <total_budget>30000</total_budget>
             </person>
           </employees>
         </production>
-        <research>
-          <total_fee>262.5</total_fee>
-          <total_budget>600</total_budget>
+        <tech>
           <employees>
             <person>
-              <name>Julianne</name>
-              <total_fee>262.5</total_fee>
-              <total_budget>600</total_budget>
+              <name>Tejas</name>
+              <total_fee>41000</total_fee>
+              <total_budget>40000</total_budget>
+            </person>
+            <person>
+              <name>Jeffrey</name>
+              <total_fee>20000</total_fee>
+              <total_budget>25000</total_budget>
             </person>
           </employees>
-        </research>
-        <strategy>
-        </strategy>
-        <tech>
         </tech>
-        <admin>
-        </admin>
-        <video>
-        </video>
     </project>
   </projects>
 </data>
